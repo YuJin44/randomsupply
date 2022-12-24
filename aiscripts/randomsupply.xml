@@ -320,7 +320,7 @@
           <param name="allowScaleplate"       value="$allowScaleplate"/>
           <param name="updateSubordinates"    value="$updateSubordinates"/>
         </create_order>
-          <set_object_commander object="$subordinate" commander="this.ship" assignment="assignment.watchdog"/>
+          <set_object_commander object="$subordinate" commander="this.ship" assignment="assignment.trade"/>
         <do_if value="@$updating" negate="true">
           <remove_value name="$updating"/>
           <wait min="5s" max="10s"/>
@@ -340,7 +340,7 @@
       <do_else>
         <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'  I am not commander'"/>
         <do_all exact="$subNr" counter="$nr">
-          <set_object_commander object="$subordinates.{$nr}" commander="this.ship.commander" assignment="assignment.watchdog"/>
+          <set_object_commander object="$subordinates.{$nr}" commander="this.ship.commander" assignment="assignment.trade"/>
         </do_all>
         <set_value name="$rng" min="180f" max="200f"/>
         <set_value name="$lastUpdated" exact="player.age - this.ship.commander.pilot.$randomXLastUpdated"/>
@@ -623,16 +623,16 @@
         <!--implementing trade rules-->
         <set_value name="$restrictedFactions" exact="$allowedFactions"/>
         <do_if value="$bypass" negate="true">
-          <do_if value="$currentSell.restriction.inverted">
+          <do_if value="$currentBuyOffer.restriction.inverted">
             <do_all exact="$restrictedFactions.count" counter="$nr" reverse="true">
-              <do_if value="$currentSell.restriction.factions.indexof.{$restrictedFactions.{$nr}}">
+              <do_if value="$currentBuyOffer.restriction.factions.indexof.{$restrictedFactions.{$nr}}">
                 <remove_value name="$restrictedFactions.{$nr}"/>
               </do_if>
             </do_all>
           </do_if>
           <do_else>
             <do_all exact="$restrictedFactions.count" counter="$nr" reverse="true">
-              <do_if value="$currentSell.restriction.factions.indexof.{$restrictedFactions.{$nr}}" negate="true">
+              <do_if value="$currentBuyOffer.restriction.factions.indexof.{$restrictedFactions.{$nr}}" negate="true">
                 <remove_value name="$restrictedFactions.{$nr}"/>
               </do_if>
             </do_all>
