@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content id="ws_1691068085" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language" version="120" date="2020-06-24" save="0" sync="false" lastupdate="1593023010">
+  <dependency version="250"/>
+  <text language="7" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="33" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="34" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="39" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="44" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="49" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="55" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="81" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="82" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="86" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+  <text language="88" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
+</content>
