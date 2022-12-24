@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- RandomSuply Ai, Created by Language. Version 120-->
-<aiscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="randomsupply" xsi:noNamespaceSchemaLocation="aiscripts.xsd" version="120">
+<!-- RandomSuply Ai, Created by Language. Version 122-->
+<aiscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="randomsupply" xsi:noNamespaceSchemaLocation="aiscripts.xsd" version="122">
   <order id="RandomSupply" name="RandomSupply" description="Random supplier logic for player owned stations." category="trade" infinite="true">
     <params>
       <param name="buyer" type="bool" default="true" text="Buyer" comment="Do we buy for our stations?"/>
@@ -77,9 +77,13 @@
       <!-- Split Based Factions (DLC)-->
       <param name="allowSplit" type="bool" default="true" text="{20203,2001}" comment="Allow this faction?"/>
       <param name="allowFreeSplit" type="bool" default="true" text="{20203,1601}" comment="Allow this faction?"/>
+      <!-- Terran Factions (DLC)-->
+      <param name="allowTerran" type="bool" default="true" text="{20203,3001}" comment="Allow this faction?"/>
+      <param name="allowPioneers" type="bool" default="true" text="{20203,2901}" comment="Allow this faction?"/>
       <!-- Pirate Factions -->
       <param name="allowHatikvah" type="bool" default="true" text="{20203,901}" comment="Allow this faction?"/>
       <param name="allowScaleplate" type="bool" default="false" text="{20203,1001}" comment="Allow this faction?"/>
+      <param name="allowYaki" type="bool" default="false" text="{20203,2801}" comment="Allow this faction?"/>
       <param name="updateSubordinates" type="bool" default="false" text="Update subordinates" comment="forcefully update settings of subordinate randomsupplyers"/>
     </params>
     <skill min="20"/> <!-- Not any hotshot can be a randomsupplier, theres standards ye know? -->
@@ -105,7 +109,7 @@
       <replace string="'('" with="''"/>
       <replace string="')'" with="''"/>
     </substitute_text>
-    <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'Starting Log File Version: 120'" append="false"/>
+    <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'Starting Log File Version: 122'" append="false"/>
     
     <set_order_syncpoint_reached order="this.ship.order"/>
 
@@ -118,6 +122,11 @@
       <do_if value="faction.split">
         <append_to_list name="$allowedFactions" exact="faction.split"/>
         <append_to_list name="$allowedFactions" exact="faction.freesplit"/>
+      </do_if>
+      <do_if value="faction.terran">
+        <append_to_list name="$allowedFactions" exact="faction.terran"/>
+        <append_to_list name="$allowedFactions" exact="faction.pioneers"/>
+        <append_to_list name="$allowedFactions" exact="faction.yaki"/>
       </do_if>
     </do_if>
     <do_else>
@@ -154,6 +163,15 @@
       </do_if>
       <do_if value="$allowFreeSplit and faction.freesplit">
         <append_to_list name="$allowedFactions" exact="faction.freesplit"/>
+      </do_if>
+      <do_if value="$allowTerran and faction.terran">
+        <append_to_list name="$allowedFactions" exact="faction.terran"/>
+      </do_if>
+      <do_if value="$allowPioneers and faction.pioneers">
+        <append_to_list name="$allowedFactions" exact="faction.pioneers"/>
+      </do_if>
+      <do_if value="$allowYaki and faction.yaki">
+        <append_to_list name="$allowedFactions" exact="faction.yaki"/>
       </do_if>
       <do_if value="$allowScaleplate">
         <append_to_list name="$allowedFactions" exact="faction.scaleplate"/>
@@ -197,7 +215,8 @@
                      ware.dronecomponents,ware.engineparts,ware.fieldcoils,ware.hullparts,ware.refinedmetals,ware.scanningarrays,ware.shieldcomponents,ware.siliconwafers,
                      ware.teladianium,ware.turretcomponents,ware.water,ware.wheat,ware.energycells,ware.foodrations,ware.graphene,ware.majadust,ware.majasnails,ware.meat,ware.cheltmeat,
                      ware.scruffinfruits,ware.microchips,ware.quantumtubes,ware.medicalsupplies,ware.missilecomponents,ware.nostropoil,ware.plasmaconductors,ware.smartchips,ware.sojabeans,
-                     ware.sojahusk,ware.spices,ware.sunriseflowers,ware.superfluidcoolant,ware.swampplant,ware.weaponcomponents]"/>
+                     ware.sojahusk,ware.spices,ware.sunriseflowers,ware.superfluidcoolant,ware.swampplant,ware.weaponcomponents, ware.computronicsubstrate,ware.metallicmicrolattice,
+                     ware.proteinpaste,ware.stimulants,ware.terranmre,ware.siliconcarbide]"/>
         <set_value name="$listCounter" exact="100"/>
         <resume label="addtoWaresToBasket"/>
       </do_if>
@@ -206,40 +225,43 @@
                      ware.dronecomponents,ware.engineparts,ware.fieldcoils,ware.hullparts,ware.refinedmetals,ware.scanningarrays,ware.shieldcomponents,ware.siliconwafers,
                      ware.teladianium,ware.turretcomponents,ware.water,ware.wheat,ware.energycells,ware.foodrations,ware.graphene,ware.majasnails,ware.meat,ware.cheltmeat,
                      ware.scruffinfruits,ware.microchips,ware.quantumtubes,ware.medicalsupplies,ware.missilecomponents,ware.nostropoil,ware.plasmaconductors,ware.smartchips,ware.sojabeans,
-                     ware.sojahusk,ware.spices,ware.sunriseflowers,ware.superfluidcoolant,ware.swampplant,ware.weaponcomponents]"/>
+                     ware.sojahusk,ware.spices,ware.sunriseflowers,ware.superfluidcoolant,ware.swampplant,ware.weaponcomponents,ware.computronicsubstrate,ware.metallicmicrolattice,
+                     ware.proteinpaste,ware.siliconcarbide]"/>
         <set_value name="$listCounter" exact="6"/>
         <resume label="addtoWaresToBasket"/>
       </do_elseif>
       <do_elseif value="$bioWares and $listCounter lt 2">
         <set_value name="$waresToAdd" exact="[ware.spices,ware.meat,ware.cheltmeat,ware.scruffinfruits,ware.wheat,ware.sojabeans,ware.majasnails,ware.sunriseflowers,
-                   ware.swampplant,ware.water,ware.foodrations,ware.medicalsupplies,ware.nostropoil,ware.sojahusk]"/>
+                   ware.swampplant,ware.water,ware.foodrations,ware.medicalsupplies,ware.nostropoil,ware.sojahusk,ware.proteinpaste,ware.terranmre]"/>
         <set_value name="$listCounter" exact="2"/>
         <resume label="addtoWaresToBasket"/>
       </do_elseif>
       <do_elseif value="$shipBuildingWares and $listCounter lt 3">
         <set_value name="$waresToAdd" exact="[ware.energycells,ware.engineparts,ware.hullparts,ware.fieldcoils,ware.advancedelectronics,ware.weaponcomponents,ware.turretcomponents,
-                   ware.antimatterconverters,ware.dronecomponents,ware.missilecomponents]"/>
+                   ware.antimatterconverters,ware.dronecomponents,ware.missilecomponents,ware.computronicsubstrate,ware.metallicmicrolattice]"/>
         <set_value name="$listCounter" exact="3"/>
         <resume label="addtoWaresToBasket"/>
       </do_elseif>
       <do_elseif value="$stationBuildingWares and $listCounter lt 4">
-        <set_value name="$waresToAdd" exact="[ware.energycells,ware.hullparts,ware.claytronics,ware.advancedelectronics,ware.turretcomponents,ware.shieldcomponents,ware.fieldcoils]"/>
+        <set_value name="$waresToAdd" exact="[ware.energycells,ware.hullparts,ware.claytronics,ware.advancedelectronics,ware.turretcomponents,ware.shieldcomponents,ware.fieldcoils,
+                   ware.computronicsubstrate,ware.metallicmicrolattice]"/>
         <set_value name="$listCounter" exact="4"/>
         <resume label="addtoWaresToBasket"/>
       </do_elseif>
       <do_elseif value="$hightechWares and $listCounter lt 5">
         <set_value name="$waresToAdd" exact="[ware.advancedcomposites,ware.engineparts,ware.hullparts,ware.microchips,ware.plasmaconductors,ware.quantumtubes,ware.scanningarrays,
-                   ware.smartchips]"/>
+                   ware.smartchips,ware.computronicsubstrate,ware.siliconcarbide]"/>
         <set_value name="$listCounter" exact="5"/>
         <resume label="addtoWaresToBasket"/>
       </do_elseif>
       <do_elseif value="$refinedWares and $listCounter lt 6">
-        <set_value name="$waresToAdd" exact="[ware.antimattercells,ware.graphene,ware.superfluidcoolant,ware.refinedmetals,ware.siliconwafers,ware.teladianium]"/>
+        <set_value name="$waresToAdd" exact="[ware.antimattercells,ware.graphene,ware.superfluidcoolant,ware.refinedmetals,ware.siliconwafers,ware.teladianium,
+                   ware.metallicmicrolattice]"/>
         <set_value name="$listCounter" exact="6"/>
         <resume label="addtoWaresToBasket"/>
       </do_elseif>
       <do_elseif value="$illegalWares and $listCounter lt 7">
-        <set_value name="$waresToAdd" exact="[ware.spacefuel,ware.spaceweed,ware.majadust]"/>
+        <set_value name="$waresToAdd" exact="[ware.spacefuel,ware.spaceweed,ware.majadust,ware.stimulants]"/>
         <set_value name="$listCounter" exact="7"/>
         <resume label="addtoWaresToBasket"/>
       </do_elseif>
@@ -317,6 +339,9 @@
           <param name="allowSplit"            value="$allowSplit"/>
           <param name="allowFreeSplit"        value="$allowFreeSplit"/>
           <param name="allowHatikvah"         value="$allowHatikvah"/>
+          <param name="allowTerran"           value="$allowTerran"/>
+          <param name="allowPioneers"         value="$allowPioneers"/>
+          <param name="allowYaki"             value="$allowYaki"/>
           <param name="allowScaleplate"       value="$allowScaleplate"/>
           <param name="updateSubordinates"    value="$updateSubordinates"/>
         </create_order>
