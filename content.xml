@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ws_1691068085" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language" version="122" date="2021-03-23" save="0" sync="false" lastupdate="1616526048">
+<content id="ws_1691068085" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language" version="123" date="2021-03-23" save="0" sync="false" lastupdate="1616526048">
   <dependency version="250"/>
   <text language="7" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
   <text language="33" name="RandomSupply" description="Random Supply: Randomized supplier logic for player owned stations." author="Language"/>
