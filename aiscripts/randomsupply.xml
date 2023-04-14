@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- RandomSuply Ai, Created by Language. Version 123-->
-<aiscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="randomsupply" xsi:noNamespaceSchemaLocation="aiscripts.xsd" version="123">
+<!-- RandomSuply Ai, Created by Language. Version 124-->
+<aiscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="randomsupply" xsi:noNamespaceSchemaLocation="aiscripts.xsd" version="124">
   <order id="RandomSupply" name="RandomSupply" description="Random supplier logic for player owned stations." category="trade" infinite="true">
     <params>
       <param name="buyer" type="bool" default="true" text="Buyer" comment="Do we buy for our stations?"/>
@@ -118,7 +118,7 @@
       <replace string="'('" with="''"/>
       <replace string="')'" with="''"/>
     </substitute_text>
-    <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'Starting Log File Version: 123'" append="false"/>
+    <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'Starting Log File Version: 124'" append="false"/>
     
     <set_order_syncpoint_reached order="this.ship.order"/>
 
@@ -374,6 +374,8 @@
           <param name="allowYaki"             value="$allowYaki"/>
           <param name="updateSubordinates"    value="$updateSubordinates"/>
         </create_order>
+        <release_commandeered_object object="$subordinate"/>
+        <wait min="800ms" max="1s"/>
         <set_object_commander object="$subordinate" commander="this.ship" assignment="assignment.trade"/>
         <do_if value="@$updating" negate="true">
           <remove_value name="$updating"/>
