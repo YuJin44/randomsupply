@@ -608,22 +608,20 @@
           </match_buyer>
         </find_buy_offer>
         <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'found '+$researchBuyOffers.count+' potential buy offers for research'"/>
-        <do_all exact="$researchBuyOffers.count" counter="$nr" reverse="true">
-          <set_value name="$researchResource" exact="$researchBuyOffers.{$nr}.ware"/>
+        <do_for_each in="$researchBuyOffers" name="$researchBuyOffer">
+          <set_value name="$researchResource" exact="$researchBuyOffer.ware"/>
           <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'scanning: %s'.[$researchResource.id]"/>
           <get_ware_reservation object="player.headquarters" type="buy" ware="$researchResource" result="$reserved"/>
           <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'reserved: %s, total: %s, needed: %s'.[$reserved, (player.headquarters.cargo.{$researchResource}.count + $reserved), $researchResources.{$researchResource}]"/>
-          <do_if value="player.headquarters.cargo.{$researchResource}.count + $reserved ge $researchResources.{$researchResource}">
-            <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'removing from researchBuyOffers list, since stock and reservation cover the research'"/>
-            <remove_value name="$researchBuyOffers.{$nr}" />
+          <do_if value="player.headquarters.cargo.{$researchResource}.count + $reserved lt $researchResources.{$researchResource}">
+            <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'appending researchBuyOffer to list, since stock and reservation dont cover the research cost'"/>
+            <append_to_list name="$buyOffers" exact="$researchBuyOffer"/>
           </do_if>
-        </do_all>
+        </do_for_each>
         <remove_value name="$reserved"/>
         <remove_value name="$researchResources"/>
         <remove_value name="$researchResource"/>
         <remove_value name="$researchBuyOffers"/>
-        <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'filtered '+$researchBuyOffers.count+' buy offers for research'"/>
-        <append_list_elements name="$uyOffers" other="$researchBuyOffers"/>
       </do_if>
       <append_to_list name="$buyOffersSteps" exact="$buyOffers"/>
       <set_value name="$stationOrBuild" exact="2"/>
