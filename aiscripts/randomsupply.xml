@@ -592,23 +592,34 @@
       </find_buy_offer>
       <wait min="1ms" max="100ms" comment="Avoid performance peaks with find functions"/>
       <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'found '+$buyOffers.count+' buy offers from player buildstorages'"/>
+      <!-- let's see if there is a research going on and try to serve it -->
       <do_if value="@player.headquarters.research.count">
         <set_value name="$researchResources" exact="player.headquarters.research.random.research.resources.table"/>
-        <find_buy_offer result="$researchBuyOffers" wares="$researchResources.keys.list" multiple="true" tradepartner="this.ship" buyer="player.headquarters">
-          <match_buyer>
-            <match_gate_distance object="$buyRange" max="$maxServe">
-              <blacklist group="blacklistgroup.civilian" object="this.ship"/>
-            </match_gate_distance>
-            <match_parent>
+        <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'HQ is researching: %s, resources: %s'.[player.headquarters.research.random, $researchResources]"/>
+        <create_list name="$waresIntersection" />
+        <do_for_each in="$researchResources.keys.list" name="$researchResource">
+          <do_if value="$wareBasket.indexof.{$researchResource}">
+            <append_to_list name="$waresIntersection" exact="$researchResource"/>
+          </do_if>
+        </do_for_each>
+        <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'ware intersection: %s'.[$waresIntersection]"/>
+        <do_if value="$waresIntersection.count">
+          <find_buy_offer result="$researchBuyOffers" wares="$waresIntersection" multiple="true" tradepartner="this.ship" buyer="player.headquarters">
+            <match_buyer>
+              <match_gate_distance object="$buyRange" max="$maxServe">
+                <blacklist group="blacklistgroup.civilian" object="this.ship"/>
+              </match_gate_distance>
               <match_parent>
-                <match_use_blacklist group="blacklistgroup.civilian" type="blacklisttype.sectoractivity" object="this.ship"/>
-                <match_use_blacklist group="blacklistgroup.civilian" type="blacklisttype.sectortravel" object="this.ship"/>
+                <match_parent>
+                  <match_use_blacklist group="blacklistgroup.civilian" type="blacklisttype.sectoractivity" object="this.ship"/>
+                  <match_use_blacklist group="blacklistgroup.civilian" type="blacklisttype.sectortravel" object="this.ship"/>
+                </match_parent>
               </match_parent>
-            </match_parent>
-          </match_buyer>
-        </find_buy_offer>
-        <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'found '+$researchBuyOffers.count+' potential buy offers for research'"/>
-        <do_for_each in="$researchBuyOffers" name="$researchBuyOffer">
+            </match_buyer>
+          </find_buy_offer>
+        </do_if>
+        <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'found '+@$researchBuyOffers.count+' potential buy offers for research'"/>
+        <do_for_each in="@$researchBuyOffers" name="$researchBuyOffer">
           <set_value name="$researchResource" exact="$researchBuyOffer.ware"/>
           <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'scanning: %s'.[$researchResource.id]"/>
           <get_ware_reservation object="player.headquarters" type="buy" ware="$researchResource" result="$reserved"/>
@@ -618,6 +629,7 @@
             <append_to_list name="$buyOffers" exact="$researchBuyOffer"/>
           </do_if>
         </do_for_each>
+        <remove_value name="$waresIntersection"/>
         <remove_value name="$reserved"/>
         <remove_value name="$researchResources"/>
         <remove_value name="$researchResource"/>
