@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- RandomSuply Ai, Created by Language. Version 125-->
-<aiscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="randomsupply" xsi:noNamespaceSchemaLocation="aiscripts.xsd" version="125">
+<!-- RandomSuply Ai, Created by Language. Version 126-->
+<aiscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="randomsupply" xsi:noNamespaceSchemaLocation="aiscripts.xsd" version="126">
   <order id="RandomSupply" name="RandomSupply" description="Random supplier logic for player owned stations." category="trade" infinite="true">
     <params>
       <param name="buyer" type="bool" default="true" text="Buyer" comment="Do we buy for our stations?"/>
@@ -118,7 +118,7 @@
       <replace string="'('" with="''"/>
       <replace string="')'" with="''"/>
     </substitute_text>
-    <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'Starting Log File Version: 125'" append="false"/>
+    <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'Starting Log File Version: 126'" append="false"/>
     
     <set_order_syncpoint_reached order="this.ship.order"/>
 
@@ -635,7 +635,7 @@
         <remove_value name="$researchResource"/>
         <remove_value name="$researchBuyOffers"/>
       </do_if>
-      <append_to_list name="$buyOffersSteps" exact="$buyOffers"/>
+      <append_to_list name="$buyOffersSteps" exact="table[$buyOffers=$buyOffers,$isBuildStorage=true]"/>
       <set_value name="$stationOrBuild" exact="2"/>
       <resume label="searchOwnSells"/>
 
@@ -653,11 +653,12 @@
           </match_parent>
         </match_buyer>
         <stocklevel min="1.0-$searchStepBuy*($stepNr+1)f" max="1.001-$searchStepBuy*($stepNr)f"/>
+        <amount min="1"/>
       </find_buy_offer>
       <wait min="1ms" max="100ms" comment="Avoid performance peaks with find functions" />
       <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'step: '+($stepNr+1)+', found '+$buyOffers.count+
                      ' buy offers from player stations'"/>
-      <append_to_list name="$buyOffersSteps" exact="$buyOffers"/>
+      <append_to_list name="$buyOffersSteps" exact="table[$buyOffers=$buyOffers,$isBuildStorage=false]"/>
       <set_value name="$stepNr" operation="add"/>
       <set_value name="$stationOrBuild" exact="1"/>
 
@@ -715,7 +716,8 @@
       <!--search for npc sells-->
       <set_value name="$stepNr" exact="1"/>
       <label name="searchNpcSells"/>
-      <set_value name="$buyOffers" exact="$buyOffersSteps.{$stepNr}"/>
+      <set_value name="$buyOffers" exact="$buyOffersSteps.{$stepNr}.$buyOffers"/>
+      <set_value name="$isBuildStorage" exact="$buyOffersSteps.{$stepNr}.$isBuildStorage"/>
       <do_all exact="$buyOffers.count" counter="$buyOffer">
         <wait min="1ms" max="100ms" comment="Avoid performance peaks with find functions" />
         <set_value name="$currentBuyOffer" exact="$buyOffers.{$buyOffer}"/>
@@ -741,7 +743,7 @@
           <continue/>
         </do_if>
         <set_value name="$currentWare" exact="$currentBuyOffer.ware"/>
-        <set_value name="$amount" exact="[this.ship.cargo.{$currentWare}.free,if $currentBuyOffer.owner.isclass.buildstorage then $currentBuyOffer.desiredamount else $currentBuyOffer.amount].min"/>
+        <set_value name="$amount" exact="[this.ship.cargo.{$currentWare}.free,if $isBuildStorage then $currentBuyOffer.desiredamount else $currentBuyOffer.amount].min"/>
         <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'  searching for npc sells to supply '+$currentBuyOffer.owner.knownname+
                        ': amount: '+$amount+', ware: '+$currentWare+', stocklevel: '+$currentBuyOffer.stocklevel"/>
         <set_value name="$maxSupplyBuy" exact="[$maxBuyRelPrice,$currentBuyOffer.relativeprice].min"/>
@@ -874,7 +876,7 @@
               </match_parent>
             </match_buyer>
             <relativeprice min="$minGetRidSell-0.001"/>
-            <totalprice min="$amount*(($currentWare.maxprice-$currentWare.averageprice)f*$minGetRidSell+($currentWare.averageprice)f)"/>
+            <totalprice min="($amount*(($currentWare.maxprice-$currentWare.averageprice)f*$minGetRidSell+($currentWare.averageprice)f) / 1Cr)Cr"/>
           </find_buy_offer>
           <wait min="1ms" max="100ms" comment="Avoid performance peaks with find functions" />
           <do_if value="$buyOffer == null">
@@ -917,6 +919,7 @@
       <remove_value name="$sellOffers"/>
       <remove_value name="$currentSell"/>
       <remove_value name="$minGetRidSell"/>
+      <remove_value name="$isBuildStorage" />
 
       <label name="noTradesPossible"/>
       <debug_to_file name="$debugFileName" directory="'RandomSupply'" text="'--- NO POSSIBLE TRADES FOUND ---'"/>
